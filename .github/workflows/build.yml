@@ -1,32 +1,7 @@
-name: Build VOTASHI (WinUI 3)
-
-on:
-  push:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Restore dependencies
-      run: msbuild -t:restore
-
-    - name: Build
-      run: msbuild /p:Configuration=Release /p:Platform=x64
-
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
         path: bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/
+        if-no-files-found: error
+        
