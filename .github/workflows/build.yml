@@ -29,16 +29,15 @@ jobs:
             Write-Error "Файл .csproj не найден!"
         }
 
-    - name: Build and Publish
+    - name: Build
       run: |
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
-        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64
+        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false
 
     - name: Find and Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
-        # Эта команда найдет все exe и dll файлы в любых папках проекта
         path: |
           **/VOTASHI.exe
           **/VOTASHI.dll
