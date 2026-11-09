@@ -19,20 +19,11 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Find and Restore dependencies
-      run: |
-        $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
-        if ($proj) {
-            Write-Host "Найден проект: $($proj.FullName)"
-            msbuild $proj.FullName -t:restore
-        } else {
-            Write-Error "Файл .csproj не найден!"
-        }
+    - name: Restore dependencies
+      run: msbuild VOTASHI.sln -t:restore
 
-    - name: Build
-      run: |
-        $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
-        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false
+    - name: Build Solution
+      run: msbuild VOTASHI.sln /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false
 
     - name: Find and Upload Artifact
       uses: actions/upload-artifact@v4
