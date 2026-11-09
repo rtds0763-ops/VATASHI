@@ -21,30 +21,26 @@ jobs:
 
     - name: Find and Restore dependencies
       run: |
-        # Ищем файл .csproj во всех папках
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
         if ($proj) {
-            Write-Host "Найден проект: $($proj.FullName)"
             msbuild $proj.FullName -t:restore
         } else {
-            Write-Error "Файл .csproj не найден в репозитории!"
+            Write-Error "Файл .csproj не найден!"
             exit 1
         }
 
     - name: Build and Publish
       run: |
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
-        # Добавил флаг -p:AppxPackageSigningEnabled=false, он критичен для WinUI
-        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false
+        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:OutDir="build/"
 
     - name: Find and Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
-        # Ищем EXE, DLL и другие файлы в ЛЮБЫХ папках проекта
         path: |
-          **/VOTASHI.exe
-          **/VOTASHI.dll
-          **/*.json
-          **/*.pri
+          build/*.exe
+          build/*.dll
+          build/*.json
+          build/*.pri
         if-no-files-found: error
