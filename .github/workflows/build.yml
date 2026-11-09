@@ -19,15 +19,25 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Restore dependencies
-      run: msbuild VOTASHI.csproj -t:restore
+    - name: Find and Restore dependencies
+      run: |
+        $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
+        if ($proj) {
+            Write-Host "Найден проект: $($proj.FullName)"
+            msbuild $proj.FullName -t:restore
+        } else {
+            Write-Error "Файл .csproj не найден в репозитории!"
+        }
 
     - name: Build
-      run: msbuild VOTASHI.csproj /p:Configuration=Release /p:Platform=x64
+      run: |
+        $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
+        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
-        path: bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/
+        path: |
+          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/
         if-no-files-found: warn
