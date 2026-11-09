@@ -34,13 +34,10 @@ jobs:
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
         msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:OutDir="build/"
 
-    - name: Find and Upload Artifact
+    - name: Upload Entire Build Folder
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
-        path: |
-          build/*.exe
-          build/*.dll
-          build/*.json
-          build/*.pri
+        # Забираем ВСЮ папку build, что бы в ней ни лежало
+        path: build/
         if-no-files-found: error
