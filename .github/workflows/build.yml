@@ -26,21 +26,22 @@ jobs:
             Write-Host "Найден проект: $($proj.FullName)"
             msbuild $proj.FullName -t:restore
         } else {
-            Write-Error "Файл .csproj не найден в репозитории!"
+            Write-Error "Файл .csproj не найден!"
         }
 
-    - name: Build
+    - name: Build and Publish
       run: |
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
         msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64
 
-    - name: Upload Artifact
+    - name: Find and Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
+        # Эта команда найдет все exe и dll файлы в любых папках проекта
         path: |
-          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/VOTASHI.exe
-          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.dll
-          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.json
-          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.pri
-        if-no-files-found: warn
+          **/VOTASHI.exe
+          **/VOTASHI.dll
+          **/*.json
+          **/*.pri
+        if-no-files-found: error
