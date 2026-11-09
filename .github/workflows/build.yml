@@ -16,9 +16,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-
     - name: Find Project
       id: find_proj
       run: |
@@ -33,7 +30,7 @@ jobs:
 
     - name: Publish Application
       run: |
-        dotnet publish $env:PROJ_PATH -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:AppxPackageSigningEnabled=false -o ./publish_output
+        dotnet publish $env:PROJ_PATH -c Release -r win-x64 -p:Platform=x64 -p:WindowsPackageType=None -p:AppxPackageSigningEnabled=false --self-contained true -o ./publish_output
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
