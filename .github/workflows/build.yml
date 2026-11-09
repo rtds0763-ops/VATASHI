@@ -1,4 +1,4 @@
-name: Build VOTASHI (WinUI 3)
+name: Build VOTASHI
 
 on:
   push:
@@ -19,25 +19,25 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Find and Restore dependencies
+    - name: Find Project
+      id: find_proj
       run: |
         $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
         if ($proj) {
-            msbuild $proj.FullName -t:restore
+            Write-Host "Найден проект: $($proj.FullName)"
+            echo "PROJ_PATH=$($proj.FullName)" >> $env:GITHUB_ENV
         } else {
             Write-Error "Файл .csproj не найден!"
             exit 1
         }
 
-    - name: Build and Publish
+    - name: Publish Application
       run: |
-        $proj = Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -First 1
-        msbuild $proj.FullName /p:Configuration=Release /p:Platform=x64 /p:AppxPackageSigningEnabled=false /p:OutDir="build/"
+        dotnet publish $env:PROJ_PATH -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:AppxPackageSigningEnabled=false -o ./publish_output
 
-    - name: Upload Entire Build Folder
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: VOTASHI_APP
-        # Забираем ВСЮ папку build, что бы в ней ни лежало
-        path: build/
+        path: ./publish_output/
         if-no-files-found: error
