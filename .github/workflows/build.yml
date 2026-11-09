@@ -39,5 +39,8 @@ jobs:
       with:
         name: VOTASHI_APP
         path: |
-          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/
+          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/VOTASHI.exe
+          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.dll
+          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.json
+          **/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/*.pri
         if-no-files-found: warn
