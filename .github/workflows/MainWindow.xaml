@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="VOTASHI">
 
-    <Grid Background="#080D25">
-        <!-- Фиолетовое свечение на фоне -->
+    <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                 <GradientStop Color="#080D25" Offset="0.0" />
@@ -14,9 +13,7 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <!-- Центральный контент -->
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <!-- Место для твоего котика. Пока это просто текст -->
             <TextBlock Text="🐱" FontSize="100" HorizontalAlignment="Center"/>
             
             <TextBlock Text="VOTASHI" 
